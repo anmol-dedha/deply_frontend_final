@@ -33,30 +33,46 @@ function App() {
     setInput("");
   };
 
-  return (
-    <div className="chat-container">
-      <h1>🌱 AnnaData Chatbot</h1>
-      <div className="chat-box">
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`msg ${msg.sender}`}>
-            <strong>{msg.sender === "user" ? "You" : "Bot"}:</strong>{" "}
-            {msg.text}
-          </div>
-        ))}
-      </div>
+const handleMic = () => {
+  if (!("webkitSpeechRecognition" in window)) {
+    alert("Speech recognition not supported in this browser.");
+    return;
+  }
 
-      <div className="input-box">
-        <input
-          type="text"
-          value={input}
-          placeholder="Ask me about farming..."
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-        />
-        <button onClick={handleSend}>Send</button>
-      </div>
+  const recognition = new window.webkitSpeechRecognition();
+  recognition.lang = "hi-IN"; // Hindi
+  recognition.start();
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    setInput(transcript);
+  };
+};
+return (
+  <div className="chat-container">
+    <h1>🧑‍🌾 AnnaData - किसानों की सेवा में</h1>
+    <div className="chat-box">
+      {messages.map((msg, idx) => (
+        <div key={idx} className={`msg ${msg.sender}`}>
+          <strong>{msg.sender === "user" ? "You" : "Bot"}:</strong>{" "}
+          {msg.text}
+        </div>
+      ))}
     </div>
-  );
+
+    <div className="input-box">
+      <input
+        type="text"
+        value={input}
+        placeholder="आपकी सेवा में..."
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSend()}
+      />
+      <button onClick={handleMic}>🎤</button>
+      <button onClick={handleSend}>भेजें</button>
+    </div>
+  </div>
+);
 }
 
 export default App;
