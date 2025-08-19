@@ -50,7 +50,7 @@ const handleMic = () => {
 };
 return (
   <div className="chat-container">
-    <h1>🧑‍🌾 AnnaData - किसानों की सेवा में</h1>
+    <h1>🧑‍🌾 AnnaData AI - किसानों की सेवा में</h1>
     <div className="chat-box">
       {messages.map((msg, idx) => (
         <div key={idx} className={`msg ${msg.sender}`}>
