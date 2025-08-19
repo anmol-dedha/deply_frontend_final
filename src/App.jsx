@@ -11,7 +11,7 @@ function App() {
     setMessages([...messages, { sender: "user", text: input }]);
 
     try {
-      const response = await fetch("https://your-backend.onrender.com/chat", {
+      const response = await fetch("https://backend-fy14.onrender.com/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),
