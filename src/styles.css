@@ -72,3 +72,14 @@ h1 {
 .input-box button:hover {
   background: #225e5f;
 }
+
+.mic-on {
+  background: red;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 5px red; }
+  50% { box-shadow: 0 0 15px red; }
+  100% { box-shadow: 0 0 5px red; }
+}
