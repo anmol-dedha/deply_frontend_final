@@ -3,7 +3,9 @@ import React, { useState } from "react";
 function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
+  const [micOn, setMicOn] = useState(false);
 
+  // 🔹 Send message to backend
   const handleSend = async () => {
     if (!input.trim()) return;
 
@@ -26,53 +28,72 @@ function App() {
     } catch (error) {
       setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: "Error connecting to backend." },
+        { sender: "bot", text: "⚠️ Error connecting to backend." },
       ]);
     }
 
     setInput("");
   };
 
-const handleMic = () => {
-  if (!("webkitSpeechRecognition" in window)) {
-    alert("Speech recognition not supported in this browser.");
-    return;
-  }
+  // 🔹 Mic input (speech-to-text)
+  const handleMic = () => {
+    if (!("webkitSpeechRecognition" in window)) {
+      alert("Speech recognition not supported in this browser.");
+      return;
+    }
 
-  const recognition = new window.webkitSpeechRecognition();
-  recognition.lang = "hi-IN"; // Hindi
-  recognition.start();
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.lang = "hi-IN"; // Hindi
+    recognition.start();
+    setMicOn(true);
 
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    setInput(transcript);
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+    };
+
+    recognition.onend = () => setMicOn(false);
   };
-};
-return (
-  <div className="chat-container">
-    <h1>🧑‍🌾 AnnaData AI - किसानों की सेवा में</h1>
-    <div className="chat-box">
-      {messages.map((msg, idx) => (
-        <div key={idx} className={`msg ${msg.sender}`}>
-          <strong>{msg.sender === "user" ? "You" : "Bot"}:</strong>{" "}
-          {msg.text}
-        </div>
-      ))}
-    </div>
 
-    <div className="input-box">
-      <input
-        type="text"
-        value={input}
-        placeholder="आपकी सेवा में..."
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleSend()}
-      />
-      <button onClick={handleMic}>🎤</button>
-      <button onClick={handleSend}>भेजें</button>
+  // 🔹 Text-to-speech (speak bot reply)
+  const speak = (text) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    // Auto-detect Hindi vs English
+    utterance.lang = /[\u0900-\u097F]/.test(text) ? "hi-IN" : "en-US";
+    window.speechSynthesis.speak(utterance);
+  };
+
+  return (
+    <div className="chat-container">
+      <h1>🧑‍🌾 AnnaData AI - किसानों की सेवा में</h1>
+
+      <div className="chat-box">
+        {messages.map((msg, idx) => (
+          <div key={idx} className={`msg ${msg.sender}`}>
+            <strong>{msg.sender === "user" ? "You" : "Bot"}:</strong>{" "}
+            {msg.text}
+            {msg.sender === "bot" && (
+              <button onClick={() => speak(msg.text)}>🔊</button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="input-box">
+        <input
+          type="text"
+          value={input}
+          placeholder="आपकी सेवा में..."
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+        />
+        <button onClick={handleMic} className={micOn ? "mic-on" : ""}>
+          🎤
+        </button>
+        <button onClick={handleSend}>भेजें</button>
+      </div>
     </div>
-  </div>
-);
+  );
 }
 
 export default App;
