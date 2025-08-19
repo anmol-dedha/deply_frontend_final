@@ -83,3 +83,60 @@ h1 {
   50% { box-shadow: 0 0 15px red; }
   100% { box-shadow: 0 0 5px red; }
 }
+
+.typing-indicator {
+  font-style: italic;
+  color: gray;
+  margin-top: 5px;
+}
+
+.dots::after {
+  content: "...";
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.weather-widget {
+  background: #e8f5e9;
+  border: 1px solid #4caf50;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.mic-on {
+  background: red;
+  color: white;
+}
+
+.chat-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.chat-box {
+  height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.msg.user {
+  text-align: right;
+  color: blue;
+}
+
+.msg.bot {
+  text-align: left;
+  color: green;
+}
