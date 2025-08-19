@@ -57,11 +57,16 @@ function App() {
 
   // 🔹 Text-to-speech (speak bot reply)
   const speak = (text) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    // Auto-detect Hindi vs English
-    utterance.lang = /[\u0900-\u097F]/.test(text) ? "hi-IN" : "en-US";
-    window.speechSynthesis.speak(utterance);
-  };
+  // Remove emojis, keep only letters, numbers, punctuation, and spaces
+  const cleanedText = text.replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, "");
+
+  if (!cleanedText.trim()) return; // Don't speak if nothing left
+
+  const utterance = new SpeechSynthesisUtterance(cleanedText);
+  // Auto-detect Hindi vs English
+  utterance.lang = /[\u0900-\u097F]/.test(cleanedText) ? "hi-IN" : "en-US";
+  window.speechSynthesis.speak(utterance);
+};
 
   return (
     <div className="chat-container">
@@ -83,7 +88,7 @@ function App() {
         <input
           type="text"
           value={input}
-          placeholder="आपकी सेवा में..."
+          placeholder="अपना सवाल पूछिए..."
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
